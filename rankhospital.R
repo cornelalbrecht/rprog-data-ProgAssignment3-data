@@ -1,4 +1,4 @@
-rankhospital <- function(state, outcome, num = "best") {
+rankhospital <- function(state, outcome, pnum = "best") {
   # Read Data
   dat <- read.csv("outcome-of-care-measures.csv", colClasses = "character")
   # Subset Data
@@ -16,16 +16,39 @@ rankhospital <- function(state, outcome, num = "best") {
   
   
   # What condition and
+#   # Sort the subset by rating
+#   if (outcome == "heart attack") ord <- order(filt$Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack, filt$Hospital.Name)
+#   if (outcome == "heart failure") ord <- order(filt$Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure, filt$Hospital.Name)
+#   if (outcome == "pneumonia") ord <- order(filt$Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia, filt$Hospital.Name)
+#   
+  # What condition and
   # Sort the subset by rating
-  if (outcome == "heart attack") ord <- order(filt$Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack, filt$Hospital.Name)
-  if (outcome == "heart failure") ord <- order(filt$Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure, filt$Hospital.Name)
-  if (outcome == "pneumonia") ord <- order(filt$Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia, filt$Hospital.Name)
+  if (outcome == "heart attack") {
+    ord <- order(filt$Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack, filt$Hospital.Name) 
+    wnum <- length(na.omit(filt$Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack))
+  }
+  if (outcome == "heart failure"){
+    ord <- order(filt$Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure, filt$Hospital.Name)
+    wnum <- length(na.omit(filt$Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure))
+  }
+  if (outcome == "pneumonia"){
+    ord <- order(filt$Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia, filt$Hospital.Name)
+    wnum <- length(na.omit(filt$Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia))
+  }
   
   
-  # best worst -> numbers
-  if (num == "best") num <- 1
+#   # best worst -> numbers
+#   if (num == "best") num <- 1
+#   # Remove the NAs
+#   if (num == "worst") num <- nrow(na.omit(filt))
+  
+  if (pnum == "best") {num <- 1L}
   # Remove the NAs
-  if (num == "worst") num <- nrow(na.omit(filt))
+  else if (pnum == "worst") {
+    num <- wnum
+  } else {
+    num <- pnum
+  }
    
   # Debug Output
   #out <- cbind(filt$Hospital.Name[ord], filt$Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia[ord])
